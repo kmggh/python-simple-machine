@@ -3,13 +3,10 @@
 
 """Decode and execute opcodes and addresses.
 
-Each instruction is, initially, a single value op code and a single
-value which can be interpreted as an address, an extended opcode,
-or a set of flags.
+Each instruction is a single value op code and a single value which
+can be interpreted as an address, an extended opcode, or a set of
+flags.
 """
-
-OP_CODES = (
-    0x20, 'add')
 
 
 class Decoder(object):
@@ -44,9 +41,9 @@ class Decoder(object):
         """
 
         op_code = self.mem.read(self.reg.ip)
-        self.reg.ip = self.reg.ip.inc()
+        self.reg.ip_inc()
         addr = self.mem.read(self.reg.ip)
-        self.reg.ip = self.reg.ip.inc()
+        self.reg.ip_inc()
 
         # Execute the instruction on addr.
         self.op_codes[op_code.num](addr)

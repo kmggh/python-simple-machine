@@ -59,18 +59,12 @@ class Computer(object):
             self.mem.write(*pair)
 
     def store_data(self):
-        """Store our data."
-
-        We'll add 2 + 3.
-
-        Data will be stored starting at 0x10 and the
-        answer will be stored at address 0x12.
-        """
+        """Store our data."""
 
         self.read_in_data(self.data)
 
     def store_program(self):
-        """Store the program starting at 0x20."""
+        """Store the program."""
 
         self.read_in_data(self.program)
 
