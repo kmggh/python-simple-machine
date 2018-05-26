@@ -19,7 +19,7 @@ MIT SICP class from 1986 and other sources I've no doubt forgotten.
 
 ## To run
 
-There are two programs currently included here.  The first is
+There are several programs currently included here.  The first is
 prog_1a_add.py which is a simple addition of 5 = 2 + 3.  It illustrates
 a very simple program.
 
@@ -35,6 +35,11 @@ The third program, prog_3_addnums.py, sums up a series of eight
 numbers and stores the total.
 
     python3 prog_3_addnums.py --run
+
+The fourth program, prog_4_cpstr.py, copies a string from one memory
+location to another.   
+
+    python3 prog_4_cpstr.py --run
 
 As you can see, you need Python 3 installed to run these programs.
 It's free and easily found on-line along with plenty of instructions on
@@ -78,12 +83,12 @@ follows.
         0x25 sub  - Subtract a number from the address from the accumulator.
 
         0x26 ldx  - Load a number from the address to the index register.
-	0x27 stx  - Store a number from the index register to the address.
+        0x27 stx  - Store a number from the index register to the address.
         0x28 szx  - Skip the next two values (instruction) on index zero.
-	0x29 dcx  - Decrement the value in the index register.
-	0x40 addx - Add the number from the address + index.
-	0x41 ldax - Load the number from address + index to the accumulator.
-	0x42 stax - Store the number from the accumulator to address + index.
+        0x29 dcx  - Decrement the value in the index register.
+        0x40 addx - Add the number from the address + index.
+        0x41 ldax - Load the number from address + index to the accumulator.
+        0x42 stax - Store the number from the accumulator to address + index.
 
 Note that we represent the op codes here as hexadecimal numbers but
 any number form or base can be used.
@@ -108,7 +113,7 @@ representation.
     decoder
         Instructions
         Decoder
-	MemoryInterface
+        MemoryInterface
     machine
         Computer
 
