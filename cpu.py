@@ -22,8 +22,10 @@ class Registers(object):
 
         self.accum = memory.Value(0)
         self.ip = memory.Address(0)
+        self.idx = memory.Address(0)
 
         self.run_flag = False
+        self.zerox_flag = False
 
     def ip_inc(self):
         """Increment the IP."""
@@ -52,8 +54,10 @@ class Clock(object):
         self.reg.run_flag = True
 
         while self.reg.run_flag:
-            print('blink... IP: {0} A: {1}'.format(self.reg.ip.hex(),
-                                                   self.reg.accum.hex()))
+            msg = 'blink... IP: {0} A: {1} IDX: {2}'
+            print(msg.format(self.reg.ip.hex(), self.reg.accum.hex(),
+                             self.reg.idx.hex()))
+
             self.decoder.fetch_execute()
             time.sleep(CLOCK_CYCLE_SEC)
 

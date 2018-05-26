@@ -6,14 +6,12 @@
 One-byte values in one-byte addresses.
 """
 
+import error
+
 SIZE = 256
 
 
-class Error(Exception):
-    """Memory errors."""
-
-
-class ValueRangeError(Error):
+class ValueRangeError(error.Error):
     """The value is out of range."""
 
 
@@ -108,6 +106,40 @@ class Value(object):
 
         return 'Value({0}, neg={1})'.format(self.hex(), self.negative_flag)
 
+    def eq_zero(self):
+        """Return true if this value is zero."""
+
+        return self == Value(0)
+
+    def __add__(self, value):
+        """Add another value to this one.
+
+        Returns:
+          A new value and a carry bool which is true if there is a
+          carry.
+        """
+
+        num_sum = self.get_num() + value.get_num()
+        carry_flag = False
+
+        if num_sum > 255:
+            new_num = num_sum - 256
+            carry_flag = True
+        elif num_sum < -255:
+            new_num = num_sum + 256
+            carry_flag = True
+        else:
+            new_num = num_sum
+
+        result_val = Value(new_num)
+
+        return result_val, carry_flag
+
+    def is_printable(self):
+        """Return True if this is a printable ASCII character."""
+
+        return self.num in range(0x20, 0x7f)
+
 
 class Address(Value):
     """A memory address which is also on the range(256)."""
@@ -153,13 +185,30 @@ class Memory(object):
 
         return addr_value
 
-    def display_range(self, addr_start, addr_end):
+    def display_printable(self, addr):
+        """Display a single address."""
+
+        value = self.read(addr)
+        if value.is_printable():
+            ascii_char = chr(value.get_num())
+        else:
+            ascii_char = ' '
+
+        addr_value_chr = '{0} {1}  {2}'.format(addr.hex(), value.hex(),
+                                               ascii_char)
+
+        return addr_value_chr
+
+    def display_range(self, addr_start, addr_end, printable=False):
         """Display a range of addresses and values."""
 
         addr = addr_start
         display_list = []
         while addr != addr_end:
-            display_list.append(self.display(addr))
+            if printable:
+                display_list.append(self.display_printable(addr))
+            else:
+                display_list.append(self.display(addr))
             addr = addr.inc()
 
         return '\n'.join(display_list)

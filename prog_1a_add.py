@@ -35,7 +35,7 @@ def main():
 
     computer = machine.Computer(data=DATA, program=PROGRAM)
     run_flag = len(sys.argv) >= 2 and '--run' in sys.argv
-    computer.run(title=TITLE, run_flag=run_flag)
+    computer.run(title=TITLE, run_flag=run_flag, print_after=True)
 
 
 if __name__ == '__main__':

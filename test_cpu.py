@@ -26,8 +26,11 @@ class TestRegisters(unittest.TestCase):
 
     def test_values(self):
         self.assertEqual(self.reg.accum, ZERO_VAL)
+        self.assertEqual(self.reg.idx, ZERO_VAL)
         self.assertEqual(self.reg.ip, ZERO_ADDR)
+
         self.assertFalse(self.reg.run_flag)
+        self.assertFalse(self.reg.zerox_flag)
 
     def test_ip_inc(self):
         self.assertEqual(self.reg.ip, ZERO_ADDR)

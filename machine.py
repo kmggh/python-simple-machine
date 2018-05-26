@@ -71,14 +71,25 @@ class Computer(object):
     def prog_display(self):
         """Display the data and program memory."""
 
-        return self.mem.display_range(ADDR(0x20), ADDR(0x2a))
+        return self.display_list(self.program)
 
-    def data_display(self):
+    def data_display(self, printable=False):
         """Display the data memory."""
 
-        return self.mem.display_range(ADDR(0x10), ADDR(0x12))
+        return self.display_list(self.data, printable)
 
-    def run(self, title, run_flag=False):
+    def display_list(self, a_list, printable=False):
+        """Display a list of address value tuple pairs."""
+
+        start_num = a_list[0][0]
+        end_num = a_list[-1][0] + 1
+
+        start_addr = memory.Address(start_num)
+        end_addr = memory.Address(end_num)
+
+        return self.mem.display_range(start_addr, end_addr, printable)
+
+    def run(self, title, run_flag=False, printable=False, print_after=False):
         """Run the program."""
 
         print('Simple Computer {0}\n'.format(version.VERSION))
@@ -88,12 +99,12 @@ class Computer(object):
         self.store_data()
         self.store_program()
 
-        print('Program:\n')
-        print(self.prog_display())
+        print('Data:\n')
+        print(self.data_display(printable=printable))
         print()
 
-        print('Data:\n')
-        print(self.data_display())
+        print('Program:\n')
+        print(self.prog_display())
         print()
 
         if run_flag:
@@ -102,4 +113,9 @@ class Computer(object):
             self.clock.run()
             print()
             print('*** Halted.')
+            print()
+
+        if run_flag and print_after:
+            print('Data:\n')
+            print(self.data_display(printable=printable))
             print()

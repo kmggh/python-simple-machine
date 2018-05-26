@@ -31,6 +31,11 @@ The second program, prog_2a_countdown.py, counts down from 10 to zero.
 
     python3 prog_2a_countdown.py --run
 
+The third program, prog_3_addnums.py, sums up a series of eight
+numbers and stores the total.
+
+    python3 prog_3_addnums.py --run
+
 As you can see, you need Python 3 installed to run these programs.
 It's free and easily found on-line along with plenty of instructions on
 how to install it.
@@ -49,16 +54,18 @@ there's no implementation of anything like one's or two's complement
 binary values.  In fact, all numbers are Python numbers and data and
 addresses are Python objects in the code.
 
-There are only two registers in the computer, the accumulator and the
-instruction pointer, again both are eight bits.
+There are only three registers in the computer, the accumulator, the
+instruction pointer, and the index register.  All are eight bits.
 
-There are several flags, the run flag, the overflow flag and the zero
-flag.  The run flag has to be set for a program to run.  The overflow
-flag should be set if a value overflows during an arithmetic
-operation.  The zero flag is set when an arithmetic operation results
-in a zero in the accumulator.
+There are several flags, the run flag, the overflow flag, the zero
+flag, and the index zero flag.  The run flag has to be set for a
+program to run.  The overflow flag should be set if a value overflows
+during an arithmetic operation.  The zero flag is set when an
+arithmetic operation results in a zero in the accumulator.  The zero
+index flag is set when the index has a zero value in it as the result
+of a store or decrement.
 
-The machine language currently consists of seven instructions but more
+The machine language currently consists of 14 instructions but more
 will certainly be added.  The instructions and there op codes are as
 follows.
 
@@ -70,11 +77,19 @@ follows.
         0x24 sza  - Skip the next two values (instruction) on zero.
         0x25 sub  - Subtract a number from the address from the accumulator.
 
+        0x26 ldx  - Load a number from the address to the index register.
+	0x27 stx  - Store a number from the index register to the address.
+        0x28 szx  - Skip the next two values (instruction) on index zero.
+	0x29 dcx  - Decrement the value in the index register.
+	0x40 addx - Add the number from the address + index.
+	0x41 ldax - Load the number from address + index to the accumulator.
+	0x42 stax - Store the number from the accumulator to address + index.
+
 Note that we represent the op codes here as hexadecimal numbers but
 any number form or base can be used.
 
-Each instruction is two bytes, i.e., two values.  The first is the op code
-and the second is an address.  Instructions like halt and sza which
+Each instruction is two bytes, i.e., two values.  The first is the op
+code and the second is an address.  Instructions like halt and sza
 don't use the address so it's ignored.
 
 ## The implementation
@@ -93,6 +108,7 @@ representation.
     decoder
         Instructions
         Decoder
+	MemoryInterface
     machine
         Computer
 

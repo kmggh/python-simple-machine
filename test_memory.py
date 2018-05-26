@@ -8,6 +8,7 @@ import unittest
 import memory
 
 VALUE_0A_HEX = 0x0a
+VALUE_10_HEX = 0x10
 ADDR_20_HEX = 0x20
 SIZE = 256
 
@@ -52,6 +53,55 @@ class TestValue(unittest.TestCase):
         value.negate()
         num = value.get_num()
         self.assertEqual(num, -VALUE_0A_HEX)
+
+    def test_eq_zero_not(self):
+        value = memory.Value(VALUE_0A_HEX)
+
+        self.assertFalse(value.eq_zero())
+
+    def test_eq_zero(self):
+        value = memory.Value(0)
+
+        self.assertTrue(value.eq_zero())
+
+    def test_add(self):
+        result, carry = memory.Value(VALUE_0A_HEX) + memory.Value(VALUE_10_HEX)
+
+        self.assertEqual(result, memory.Value(0x1a))
+        self.assertFalse(carry)
+
+    def test_add_neg(self):
+        val1 = memory.Value(VALUE_10_HEX)
+        val2 = memory.Value(- VALUE_0A_HEX)
+        result, carry = val1 + val2
+
+        self.assertEqual(result, memory.Value(0x06))
+        self.assertFalse(carry)
+
+    def test_add_over(self):
+        val1 = memory.Value(0xf0)
+        val2 = memory.Value(0xf0)
+
+        result, carry = val1 + val2
+
+        self.assertEqual(result, memory.Value(0xe0))
+        self.assertTrue(carry)
+
+    def test_add_neg_result(self):
+        val1 = memory.Value(- VALUE_10_HEX)
+        val2 = memory.Value(VALUE_0A_HEX)
+        result, carry = val1 + val2
+
+        self.assertEqual(result, memory.Value(-0x06))
+        self.assertFalse(carry)
+
+    def test_is_printable(self):
+        self.assertFalse(memory.Value(0x01).is_printable())
+        self.assertTrue(memory.Value(0x21).is_printable())
+        self.assertTrue(memory.Value(0x50).is_printable())
+        self.assertTrue(memory.Value(0x65).is_printable())
+        self.assertFalse(memory.Value(0x7f).is_printable())
+        self.assertFalse(memory.Value(0xa0).is_printable())
 
 
 class TestAddress(unittest.TestCase):
@@ -102,6 +152,20 @@ class TestMemory(unittest.TestCase):
         self.mem.write(addr, value)
 
         self.assertEqual(self.mem.display(addr), '0x20 0x0a')
+
+    def test_display_addr_not_printable(self):
+        value = memory.Value(VALUE_0A_HEX)
+        addr = memory.Address(ADDR_20_HEX)
+        self.mem.write(addr, value)
+
+        self.assertEqual(self.mem.display_printable(addr), '0x20 0x0a   ')
+
+    def test_display_addr_printable(self):
+        value = memory.Value(0x43)
+        addr = memory.Address(ADDR_20_HEX)
+        self.mem.write(addr, value)
+
+        self.assertEqual(self.mem.display_printable(addr), '0x20 0x43  C')
 
     def test_display_range(self):
         value = memory.Value(VALUE_0A_HEX)
